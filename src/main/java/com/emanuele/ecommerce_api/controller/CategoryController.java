@@ -25,11 +25,7 @@ public class CategoryController {
 
     @GetMapping("/categories/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id){
-        Category category = categoryService.findById(id);
-        if(category == null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(categoryService.findById(id));
     }
 
     @PostMapping("/categories")
