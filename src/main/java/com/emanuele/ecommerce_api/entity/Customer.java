@@ -1,5 +1,6 @@
 package com.emanuele.ecommerce_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
@@ -36,6 +37,7 @@ public class Customer {
     private LocalDateTime registrationDate;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 
     @PrePersist
