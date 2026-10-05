@@ -2,6 +2,7 @@ package com.emanuele.ecommerce_api.service;
 
 import com.emanuele.ecommerce_api.entity.Order;
 import com.emanuele.ecommerce_api.entity.OrderItem;
+import com.emanuele.ecommerce_api.entity.OrderStatus;
 import com.emanuele.ecommerce_api.entity.Product;
 import com.emanuele.ecommerce_api.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class OrderService {
         for(OrderItem item : order.getOrderItems()){
             Product product = productService.findById(item.getProduct().getId());// pegar o produto com suas informações
             item.setProduct(product);
+
             if (item.getQuantity() <= product.getStockQuantity()) {
                 Integer stockQuantity = product.getStockQuantity();
                 stockQuantity -= item.getQuantity();
@@ -41,6 +43,7 @@ public class OrderService {
             }else{
                 throw new RuntimeException("Insuffficient Stock quantity");
             }
+
             item.setOrder(order);
             //calculate the totalValue automatically
             BigDecimal unitPrice = item.getUnitPrice(); //pega o preço unitário
@@ -50,6 +53,19 @@ public class OrderService {
             sum = sum.add(mult);
         }
         order.setTotalValue(sum);
+        return orderRepository.save(order);
+    }
+
+    public Order cancelOrder(Long id){
+        Order order = findById(id);
+        for(OrderItem item : order.getOrderItems()){
+            Product product = productService.findById(item.getProduct().getId());
+            Integer stockQuantity = product.getStockQuantity();
+            stockQuantity += item.getQuantity();
+            product.setStockQuantity(stockQuantity);
+            productService.save(product);
+        }
+        order.setOrderStatus(OrderStatus.CANCELLED);
         return orderRepository.save(order);
     }
 

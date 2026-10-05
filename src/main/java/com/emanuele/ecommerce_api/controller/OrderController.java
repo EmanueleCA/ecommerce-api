@@ -41,6 +41,12 @@ public class OrderController {
         return orderService.save(order);
     }
 
+    @PatchMapping("/orders/{id}/cancel") //atualização parcial
+    @ResponseStatus(HttpStatus.OK)
+    public Order cancel(@PathVariable Long id){
+        return orderService.cancelOrder(id);
+    }
+
     @DeleteMapping("/orders/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id){
