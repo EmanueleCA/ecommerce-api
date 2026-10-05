@@ -2,6 +2,7 @@ package com.emanuele.ecommerce_api.service;
 
 
 import com.emanuele.ecommerce_api.entity.Product;
+import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class ProductService {
 
     public Product findById(Long id){
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("product not found"));
     }
 
     public Product save(Product product){

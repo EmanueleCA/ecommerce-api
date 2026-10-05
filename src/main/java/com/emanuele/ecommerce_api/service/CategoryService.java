@@ -1,6 +1,7 @@
 package com.emanuele.ecommerce_api.service;
 
 import com.emanuele.ecommerce_api.entity.Category;
+import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class CategoryService {
 
     public Category findById(Long id){
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Id category not found : " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Id category not found : " + id));
 
     }
 

@@ -1,6 +1,7 @@
 package com.emanuele.ecommerce_api.service;
 
 import com.emanuele.ecommerce_api.entity.Address;
+import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class AddressService {
 
     public Address findById(Long id){
         return addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
     }
 
     public Address save(Address address){

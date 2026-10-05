@@ -4,6 +4,8 @@ import com.emanuele.ecommerce_api.entity.Order;
 import com.emanuele.ecommerce_api.entity.OrderItem;
 import com.emanuele.ecommerce_api.entity.OrderStatus;
 import com.emanuele.ecommerce_api.entity.Product;
+import com.emanuele.ecommerce_api.exception.InsufficientStockException;
+import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class OrderService {
 
     public Order findById(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     public Order save(Order order){
@@ -41,7 +43,7 @@ public class OrderService {
                 product.setStockQuantity(stockQuantity);
                 productService.save(product);
             }else{
-                throw new RuntimeException("Insuffficient Stock quantity");
+                throw new InsufficientStockException("Insuffficient Stock quantity");
             }
 
             item.setOrder(order);

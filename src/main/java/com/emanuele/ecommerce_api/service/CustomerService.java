@@ -1,6 +1,7 @@
 package com.emanuele.ecommerce_api.service;
 
 import com.emanuele.ecommerce_api.entity.Customer;
+import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class CustomerService {
 
     public Customer findById(Long id){
         return customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     }
 
     public Customer save(Customer customer){
