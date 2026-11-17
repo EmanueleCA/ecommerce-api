@@ -36,4 +36,9 @@ public class GlobalExceptionHandler{
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(InvalidOrderStateException.class)
+    public ResponseEntity<String> handleInvalidOrderState(InvalidOrderStateException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

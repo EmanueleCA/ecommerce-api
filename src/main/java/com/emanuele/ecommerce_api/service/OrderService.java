@@ -5,9 +5,11 @@ import com.emanuele.ecommerce_api.entity.OrderItem;
 import com.emanuele.ecommerce_api.entity.OrderStatus;
 import com.emanuele.ecommerce_api.entity.Product;
 import com.emanuele.ecommerce_api.exception.InsufficientStockException;
+import com.emanuele.ecommerce_api.exception.InvalidOrderStateException;
 import com.emanuele.ecommerce_api.exception.ResourceNotFoundException;
 import com.emanuele.ecommerce_api.repository.OrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,11 +33,13 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
+    @Transactional
     public Order save(Order order){
         BigDecimal sum = BigDecimal.ZERO;
         for(OrderItem item : order.getOrderItems()){
             Product product = productService.findById(item.getProduct().getId());// pegar o produto com suas informações
             item.setProduct(product);
+            item.setUnitPrice(product.getPrice());
 
             if (item.getQuantity() <= product.getStockQuantity()) {
                 Integer stockQuantity = product.getStockQuantity();
@@ -43,7 +47,7 @@ public class OrderService {
                 product.setStockQuantity(stockQuantity);
                 productService.save(product);
             }else{
-                throw new InsufficientStockException("Insuffficient Stock quantity");
+                throw new InsufficientStockException("Insufficient Stock quantity");
             }
 
             item.setOrder(order);
@@ -58,8 +62,12 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional
     public Order cancelOrder(Long id){
         Order order = findById(id);
+        if (order.getOrderStatus() == OrderStatus.CANCELLED) {
+            throw new InvalidOrderStateException("Order is already cancelled");
+        }
         for(OrderItem item : order.getOrderItems()){
             Product product = productService.findById(item.getProduct().getId());
             Integer stockQuantity = product.getStockQuantity();
@@ -73,6 +81,11 @@ public class OrderService {
 
 
     public void deleteById(Long id){
+        Order order = findById(id);
+        if (order.getOrderStatus() != OrderStatus.CANCELLED) {
+            throw new InvalidOrderStateException("Only cancelled orders can be deleted");
+        }
         orderRepository.deleteById(id);
+
     }
 }

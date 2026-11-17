@@ -1,6 +1,5 @@
 package com.emanuele.ecommerce_api.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +40,6 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addItem(OrderItem item) {

@@ -3,8 +3,8 @@ services:
     image: mysql:8.0
     container_name: ecommerce-db
     environment:
-      MYSQL_DATABASE: ecommerce
-      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
